@@ -350,5 +350,5 @@ MigrationBackup/
 .ionide/
 
 node_modules/
-build
-prod/
+**/build
+**/prod/
