@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancePlanner.WebClient", "FinancePlanner.WebClient\FinancePlanner.WebClient.csproj", "{87A92C7A-A173-4EF4-9C82-9A0F18AFA1FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87A92C7A-A173-4EF4-9C82-9A0F18AFA1FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87A92C7A-A173-4EF4-9C82-9A0F18AFA1FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87A92C7A-A173-4EF4-9C82-9A0F18AFA1FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87A92C7A-A173-4EF4-9C82-9A0F18AFA1FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {037173BE-B1C0-4BF6-95C4-455075F07EDE}
+	EndGlobalSection
+EndGlobal

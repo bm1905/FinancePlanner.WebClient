@@ -1,0 +1,41 @@
+﻿{
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "./wwwroot/build/",
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node"
+  },
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ]
+}
+
+//{
+//  "compilerOptions": {
+//    "allowJs": true,
+//    "outDir": "./wwwroot/build/",
+//    "rootDirs": [ "./wwwroot/js/" ],
+//    "noImplicitAny": false,
+//    "noEmitOnError": true,
+//    "moduleResolution": "node",
+//    "resolveJsonModule": true,
+//    "sourceMap": true,
+//    "module": "CommonJS",
+//    "target": "es5",
+//    "lib": [ "es2015", "dom" ]
+//  },
+//  "exclude": [
+//    "node_modules" //,
+//    //"wwwroot"
+//  ],
+//  "compileOnSave": true
+//}

@@ -1,0 +1,28 @@
+{
+  "name": "financeplanner.webclient",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "buildTest": "webpack --config webpack.config-Test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jquery": "^3.5.14",
+    "@types/knockout": "^3.4.72",
+    "babel-loader": "^8.2.5",
+    "expose-loader": "^4.0.0",
+    "jquery": "^3.6.1",
+    "knockout": "^3.5.1",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.10.0"
+  }
+}
