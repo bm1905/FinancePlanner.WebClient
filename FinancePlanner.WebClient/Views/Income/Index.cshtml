@@ -1,0 +1,158 @@
+﻿@{
+    ViewData["Title"] = "Pay Page";
+}
+@using FinancePlanner.Shared.Models.FinanceServices
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@if (Model != null)
+{
+    <h5>Income Snapshot</h5>
+    <div class="container p-4 border">
+        @{
+            decimal totalGrossIncome = 0;
+            decimal totalNetIncome = 0;
+        }
+        @foreach (IncomeInformationResponse response in Model)
+        {
+            totalGrossIncome += response.GrossPay;
+            totalNetIncome += response.NetPay;
+        }
+        <div class="row pb-2">
+            <div class="col">
+                <h1 class="text-primary">Total Monthly Net Pay : @($"{totalNetIncome * 2:c}")</h1>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Frequency</th>
+                <th>Total Gross Pay</th>
+                <th>Total Net Pay</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Bi-Weekly</td>
+                <td><span style="font-size: 20px;">@($"{totalGrossIncome:c}")</span></td>
+                <td><span style="font-size: 20px;">@($"{totalNetIncome:c}")</span></td>
+            </tr>
+            <tr>
+                <td>Monthly</td>
+                <td><span style="font-size: 20px;">@($"{totalGrossIncome * 2:c}")</span></td>
+                <td><span style="font-size: 20px;">@($"{totalNetIncome * 2:c}")</span></td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Total Foretasted Compensation</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Gross</td>
+                <td><span style="font-size: 20px;">@($"{totalGrossIncome*26:c}")</span></td>
+            </tr>
+            <tr>
+                <td>Net</td>
+                <td><span style="font-size: 20px;">@($"{totalNetIncome*26:c}")</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <h5>Break down per employer</h5>
+    <div class="container">
+        <div class="row justify-content-center">
+        @foreach (IncomeInformationResponse incomeInformation in Model)
+        {
+            <div class="col-4 ">
+                <div class="p-0 my-3 border">
+                    <div class="card" >
+                        <div class="card-body">
+                            <h3 class="card-title text-success">@incomeInformation.EmployeeName</h3>
+                            <hr/>
+                            <div class="row">
+                                <div class="col pt-1">
+                                        <p class="card-text">Total Gross Pay: <span style="font-size:20px;">@($"{incomeInformation.GrossPay:c}")</span></p>
+                                        <p class="card-text">Total Hours Worked: <span style="font-size: 20px;">@incomeInformation.TotalHours</span></p>
+                                </div>
+                                <div class="col pt-1">
+                                        <p class="card-text">Total Net Pay: <span style="font-size:20px;">@($"{incomeInformation.NetPay:c}")</span></p>
+                                        <p class="card-text">Pay Rate: <span style="font-size: 20px;">@($"{incomeInformation.PayRate:c}")</span></p>
+                                </div>
+                            </div>
+                            <hr/>
+                            <p class="card-text">Total taxes paid: <span style="font-size:20px;">@($"{incomeInformation.TaxWithheldInformation.TotalTaxesWithheldAmount:c}")</span></p>
+                            <div class="row">
+                                <div class="col pt-1">
+                                    <p class="card-text">Federal Taxes: <span style="font-size:15px;">@($"{incomeInformation.TaxWithheldInformation.FederalTaxWithheldAmount:c}")</span></p>
+                                </div>
+                                <div class="col pt-1">
+                                        <p class="card-text">State Taxes: <span style="font-size: 15px;">@($"{incomeInformation.TaxWithheldInformation.StateTaxWithheldAmount:c}")</span></p>
+                                </div>
+                                <div class="col pt-1">
+                                        <p class="card-text">Social Taxes: <span style="font-size: 15px;">@($"{incomeInformation.TaxWithheldInformation.SocialSecurityWithheldAmount:c}")</span></p>
+                                </div>
+                                <div class="col pt-1">
+                                        <p class="card-text">Medicare Taxes: <span style="font-size: 15px;">@($"{incomeInformation.TaxWithheldInformation.MedicareWithheldAmount:c}")</span></p>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="col pt-1">
+                                    <p class="card-text">Pre Tax Deductions: <span style="font-size:15px;">@($"{incomeInformation.TotalPreTaxDeductions:c}")</span></p>
+                                </div>
+                                <div class="col pt-1">
+                                    <p class="card-text">Post Tax Deductions: <span style="font-size: 15px;">@($"{incomeInformation.TotalPostTaxDeductions:c}")</span></p>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="col pt-1">
+                                    <p class="card-text">State and Federal Taxable Wages: <span style="font-size: 15px;">@($"{incomeInformation.TaxableWageInformation.StateAndFederalTaxableWages:c}")</span></p>
+                                </div>
+                                <div class="col pt-1">
+                                    <p class="card-text">Social and Medicare Taxable Wages: <span style="font-size: 15px;">@($"{incomeInformation.TaxableWageInformation.SocialAndMedicareTaxableWages:c}")</span></p>
+                                </div>
+                            </div>
+                                <hr/>
+                            <div class="row">
+                                <div class="col">
+                                    <a asp-action="Details" asp-route-productId="Edit"
+                                       class="btn btn-success form-control">Update</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+    </div>
+}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4 text-center">
+            Refresh all information
+            <form asp-action="GetIncomeInformation" asp-controller="Income">
+                <hr/>
+                <div class="row justify-content-center">
+                    <div class="col-4">
+                        <input type="submit" value="Refresh" class="btn btn-success form-control"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
+

@@ -1,40 +1,109 @@
-﻿using Shared.Models.Exceptions;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Net.Http.Headers;
+using FinancePlanner.Shared.Models.Exceptions;
+using System.Collections.Generic;
+using System.Net;
+using System.Text;
 
-namespace FinancePlanner.WebClient.Extensions
+namespace FinancePlanner.WebClient.Extensions;
+
+public static class HttpClientExtension
 {
-    public static class HttpClientExtension
+    public static async Task<List<TResponse>> GetList<TResponse>(this HttpClient client, string url)
     {
-        public static async Task<T> ReadContentAs<T>(this HttpResponseMessage response)
+        JsonSerializerOptions options = new()
         {
-            if (!response.IsSuccessStatusCode)
-                throw new InternalServerErrorException($"Something went wrong calling the API: {response.ReasonPhrase}");
-
-            string dataAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            return JsonSerializer.Deserialize<T>(dataAsString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) 
-                   ?? throw new InternalServerErrorException($"API call error out with for {typeof(T)}");
+            PropertyNameCaseInsensitive = true
+        };
+        HttpResponseMessage response = await client.GetAsync(url);
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            throw new UnauthorizedException($"Request: {response.StatusCode}", $"The request for client {client.BaseAddress} and endpoint {url} is not authorized.");
         }
 
-        public static Task<HttpResponseMessage> PostAsJson<T>(this HttpClient httpClient, string url, T data)
+        if (!response.IsSuccessStatusCode)
         {
-            var dataAsString = JsonSerializer.Serialize(data);
-            var content = new StringContent(dataAsString);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            return httpClient.PostAsync(url, content);
+            string errorResponse = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(errorResponse)) throw new InternalServerErrorException($"API call error out with status {response.StatusCode}");
+            ExceptionModel? exceptionModel = JsonSerializer.Deserialize<ExceptionModel>(errorResponse, options);
+            if (exceptionModel == null)
+            {
+                throw new InternalServerErrorException($"API call error out with {response.StatusCode}");
+            }
+            throw new ApiErrorException(exceptionModel.Message ?? "API call error", exceptionModel.Details ?? string.Empty);
         }
 
-        public static Task<HttpResponseMessage> PutAsJson<T>(this HttpClient httpClient, string url, T data)
-        {
-            var dataAsString = JsonSerializer.Serialize(data);
-            var content = new StringContent(dataAsString);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        string responseString = await response.Content.ReadAsStringAsync();
 
-            return httpClient.PutAsync(url, content);
+        List<TResponse>? responseModel = JsonSerializer.Deserialize<List<TResponse>>(responseString, options);
+        if (responseModel == null)
+        {
+            throw new InternalServerErrorException($"{nameof(TResponse)} is empty or null");
         }
+
+        return responseModel;
+    }
+
+    public static async Task<TResponse?> Post<TRequest, TResponse>(this HttpClient client, TRequest model, string url)
+    {
+        JsonSerializerOptions options = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        string requestJson = JsonSerializer.Serialize(model);
+        StringContent requestContent = new(requestJson, Encoding.UTF8, "application/json");
+
+        HttpResponseMessage response = await client.PostAsync(url, requestContent);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            throw new UnauthorizedException($"Request: {response.StatusCode}", $"The request for client {client.BaseAddress} and endpoint {url} is not authorized.");
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            string errorResponse = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(errorResponse)) throw new InternalServerErrorException($"API call error out with status {response.StatusCode}");
+            ExceptionModel? exceptionModel = JsonSerializer.Deserialize<ExceptionModel>(errorResponse, options);
+            if (exceptionModel == null)
+            {
+                throw new InternalServerErrorException($"API call error out with {response.StatusCode}");
+            }
+            throw new ApiErrorException(exceptionModel.Message ?? "API call error", exceptionModel.Details ?? string.Empty);
+        }
+
+        string responseString = await response.Content.ReadAsStringAsync();
+        TResponse? responseModel = JsonSerializer.Deserialize<TResponse>(responseString, options);
+        if (responseModel == null)
+        {
+            throw new InternalServerErrorException($"{nameof(TResponse)} is empty or null");
+        }
+
+        return responseModel;
+    }
+
+    public static async Task<bool> Delete(this HttpClient client, string url)
+    {
+        JsonSerializerOptions options = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        HttpResponseMessage response = await client.DeleteAsync(url);
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            throw new UnauthorizedException($"Request: {response.StatusCode}", $"The request for client {client.BaseAddress} and endpoint {url} is not authorized.");
+        }
+
+        if (response.IsSuccessStatusCode) return JsonSerializer.Deserialize<bool>(await response.Content.ReadAsStringAsync());
+
+        string errorResponse = await response.Content.ReadAsStringAsync();
+        if (string.IsNullOrEmpty(errorResponse)) throw new InternalServerErrorException($"API call error out with status {response.StatusCode}");
+        ExceptionModel? exceptionModel = JsonSerializer.Deserialize<ExceptionModel>(errorResponse, options);
+        if (exceptionModel == null)
+        {
+            throw new InternalServerErrorException($"API call error out with {response.StatusCode}");
+        }
+        throw new ApiErrorException(exceptionModel.Message ?? "API call error", exceptionModel.Details ?? string.Empty);
     }
 }
