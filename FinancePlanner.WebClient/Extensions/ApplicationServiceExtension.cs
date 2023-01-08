@@ -43,9 +43,9 @@ public static class ApplicationServiceExtension
             .WaitAndRetryAsync(int.Parse(config.GetSection("Clients:RetryCount").Value),
                 retryAttempt => TimeSpan.FromSeconds(retryAttempt));
 
-        services.AddHttpClient(config.GetSection("Clients:ApiGatewayClient:ClientName").Value, client =>
+        services.AddHttpClient(config.GetSection("Clients:ApiAggregatorClient:ClientName").Value, client =>
         {
-            client.BaseAddress = new Uri(config.GetSection("Clients:ApiGatewayClient:BaseURL").Value);
+            client.BaseAddress = new Uri(config.GetSection("Clients:ApiAggregatorClient:BaseURL").Value);
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
         }).AddPolicyHandler(retryPolicy).AddHttpMessageHandler<AuthenticationDelegatingHandler>();

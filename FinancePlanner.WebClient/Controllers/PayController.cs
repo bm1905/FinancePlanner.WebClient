@@ -1,7 +1,6 @@
 ﻿using FinancePlanner.Shared.Models.FinanceServices;
 using FinancePlanner.WebClient.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FinancePlanner.WebClient.Controllers;

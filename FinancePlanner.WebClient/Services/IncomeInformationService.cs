@@ -20,8 +20,8 @@ public class IncomeInformationService : IIncomeInformationService
 
     public async Task<List<IncomeInformationResponse>?> GetIncomeInformation(string userId)
     {
-        HttpClient httpClient = _httpClientFactory.CreateClient(_config.GetSection("Clients:ApiGatewayClient:ClientName").Value);
-        string requestUrl = $"{_config.GetSection("Clients:ApiGatewayClient:GetIncomeInformation").Value}/{userId}";
+        HttpClient httpClient = _httpClientFactory.CreateClient(_config.GetSection("Clients:ApiAggregatorClient:ClientName").Value);
+        string requestUrl = $"{_config.GetSection("Clients:ApiAggregatorClient:GetIncomeInformation").Value}/{userId}";
         List<IncomeInformationResponse> responses = await httpClient.GetList<IncomeInformationResponse>(requestUrl);
         return responses;
     }

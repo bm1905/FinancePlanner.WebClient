@@ -4,15 +4,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using HealthChecks.UI.Client;
-using Serilog;
-using Logger;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
 
 builder.Services.AddHealthChecks();
-builder.Host.UseSerilog(SeriLogger.Configure);
 builder.Services.AddWebClientServices(configuration);
 builder.Services.AddControllersWithViews();
 
